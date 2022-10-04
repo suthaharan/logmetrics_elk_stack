@@ -10,6 +10,7 @@ The Elastic Stack lets you avoid that frantic search and immediately get started
 Beats are a lightweight way of getting data into the ELK Stack. They're individual packages written in Go that are focused on a single type of data. For example, Filebeat is a lightweight tool for shipping file-based logs from your various systems into the stack. Packetbeat is another that's used for ingesting network data. There are several more official Beats written and maintained by Elastic, and there are tons more community Beats, which are written and maintained by the open source community. You can even write your own Beat if you can't find what you're looking for in the official or community-maintained options. Before there were Beats, there was just Logstash. But Logstash does more than just ingest data. Its main purpose is for transforming data as it's coming in. For example, transforming plain text log lines into structured data objects. That structured data object is what gets stashed in your stack rather than just the raw text. It's a bit like cutting up carrots as soon as you get home from the store and putting 'em right in the fridge rather than waiting until right before you're ready to cook. Beats are lightweight, single-purpose tools. They might do exactly what you need or something close enough, like this tool for making spirals out of carrots. 
 
 Logstash is like the big, heavy food processor in our metaphor. It's more work to deal with, but you get exactly what you want. Logstash is fairly resource-intensive, but you don't have to choose between Beats and Logstash. You can use Beats for the initial shipping of data to a central Logstash server that then handles the processing. Elasticsearch is the part of the stack that stores things. It holds all of the data itself. It's also the part of the stack that holds the index of the data for quick searching and for managing it around the cluster. A single Elasticsearch cluster can store more than one index so unrelated data can be kept separate for efficiency. In production use, Elasticsearch is generally deployed as a cluster. It does this by splitting up the data and indexes into one or more shards that are then physically distributed across the cluster. In this illustration, we've got shards A, B, and C. All of the shards have a redundant copy, but the individual servers each have different shards. When a server is removed, either intentionally or not, the data will still be available in the cluster, and the cluster can keep functioning in a degraded state while it tries to restore the redundant copies. Or in this case where a server is replaced, it will restore the data to that server. Of course, if all of the redundant copies of a shard are lost, the cluster won't be able to automatically recover, and the data will need to be restored manually. 
+
 Kibana is the part of the stack that lets you easily get to your data and work with it. It's the web front end to Elastic Stack. You can do ad hoc searching, create visualizations, and a lot more. Kibana lets you define preset dashboards for combining multiple visualizations, text searches, or both on one screen. This is really handy for getting a quick bird's eye view across your infrastructure, like watching web traffic, error logs, and long-running database queries all in one place.
 
 
@@ -200,6 +201,9 @@ filter {
 https://grokconstructor.appspot.com/do/construction?example=2
 
 ##### Grok is a log parser
+
+![alt="Grok constructor"](./images/grok.jpg)
+
 ```
 $ cd /vagrant
 $ cp interactive.conf interactive.txt
