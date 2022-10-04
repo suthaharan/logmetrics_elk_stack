@@ -30,7 +30,7 @@ $ sudo su -
 ```
 
 ##### Copy/paste document for setting up your learning sandbox
-
+```
 $ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
 
 Setup the repository
@@ -38,16 +38,21 @@ $ echo "deb https://artifacts.elastic.co/packages/oss-7.x/apt stable main" | sud
 
 Update app and install elastic search
 $ apt-get update && apt-get install elasticsearch-oss
-
+```
 
 ##### Enable ElasticSearch on start
+```
 $ systemctl enable elasticsearch
+```
 
 ##### Start ElasticSearch on start
+```
 $systemctl start elasticsearch.service
-
+```
 ##### Check if ElasticSearch is running
+```
 $ curl localhost:9200/?pretty
+```
 
 ##### Kibana
 ![alt text](./images/kibana.jpg)
@@ -60,16 +65,19 @@ $ systemctl enable kibana
 $ systemctl start kibana.service
 ```
 ##### Show the logs from the service under systemd
+```
 $ journalctl -u kibana
+```
 
 - To access the service from browser, we need to change the server host
-
-$# vim /etc/kibana/kibana.yml ( you can also change the port here)
+```
+$ vim /etc/kibana/kibana.yml ( you can also change the port here)
 server.host: "0"
-
+```
 Restart the service for the changes to take effect
+```
 $ systemctl restart kibana.service
-
+```
 
 To check if kibana is running
 ```
