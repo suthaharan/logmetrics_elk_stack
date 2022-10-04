@@ -1,6 +1,8 @@
 ### Log Metrics ELK stack
 Learn ElasticSearch, Logstash, FileBeats, MetricBeats, Kibana using a Vagrant box
 
+![alt text](./images/elastic.jpg)
+
 Elasticsearch can manage just about any kind of data, not just log files. In this learning, we're going to focus on that log file use case. So the primary audience is anyone who needs to work with a lot of log data, that's people like Dev0ps engineers, system administrators, security engineers and full-stack developers. Even if that doesn't describe your current role, you may still find a lot of value in how the Elastic Stack applies to that use case.
 
 The Elastic Stack lets you avoid that frantic search and immediately get started on troubleshooting the issue. You can just go to one central place and immediately find where the problem is, and then solve that immediate issue in place. It also means that you can quickly cross reference logs in order to fix the underlying bug that caused the issue in the first place. Kibana is the visualization and search front end for the stack, it gives you a way to search through logs and apply preset filters. For example, looking for the keyword error like in the screenshot, that's handy and could save a lot of trouble. But looking at a wall of text, it can be hard to see pattern. For me one of the best parts of Kibana is that it lets you visualize that data in real time. That means you can notice potential issues at a glance. For example, we might start by looking through the messages associated with this big spike in errors before looking through this sequential list of all error logs. The Elastic Stack can be used for more than logs, anyone who needs to handle a lot of data and be able to index and search that data could use it. That could be medical researchers working with DNA sequencing, or a web app that needs a back end to power at search box. We're going to focus on logs in this course, since that's the most common use for this tool, and it's easier to demonstrate. The stack doesn't really care what your data is. So even if you use it for logs, you may find that you have another use case other than just handling those.
@@ -48,6 +50,8 @@ $systemctl start elasticsearch.service
 $ curl localhost:9200/?pretty
 
 ##### Kibana
+![alt text](./images/kibana.jpg)
+
 ```
 $ apt-get update && apt-get install kibana-oss
 
@@ -68,8 +72,9 @@ $ systemctl restart kibana.service
 
 
 To check if kibana is running
+```
 $ netstat -tulpn
-
+```
 To check the kibana service on the web browser, go to
 http://localhost:5601/
 
@@ -82,17 +87,23 @@ Left menu > Discover (try the inteface)
 
 
 ##### Configuring logstash
-- expects java to be installed
+Expects java to be installed
 
 - To install logstash we need java installed
-apt-get update && apt-get install openjdk-11-jre
+```
+$ apt-get update && apt-get install openjdk-11-jre
+```
 
 - Now we install logstash
-apt-get install logstash-oss
+```
+$ apt-get install logstash-oss
+```
 
 - Now we need to set java home variable
+```
 vim /etc/default/logstash
 JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
+```
 
 - Enable service and start
 ```
@@ -100,15 +111,15 @@ $ systemctl enable logstash
 $ systemctl start logstash.service
 $ systemctl status logstash.service
 ```
-
+```
 cd /var/log/
 ** Do not use syslog as it will run into endless loops
 ** May be try kern.log
 
+$ cp /vagrant/kern.conf /etc/logstash/conf.d/kern.conf
 
-cp /vagrant/kern.conf /etc/logstash/conf.d/kern.conf
 $ vim /etc/logstash/conf.d/kern.conf
-
+```
 
 To give read access to kern.log for all users so we could read from the logs
 ```
@@ -131,29 +142,30 @@ $ /usr/share/logstash/bin/logstash -e 'input { stdin { } } output { stdout {} }'
 ```
 ctrl + D - exit logstash
 
-
+```
 /usr/share/logstash/bin/logstash -e 'input { stdin { } } output { stdout { codec => rubydebug } }'
 
 /usr/share/logstash/bin/logstash  -e 'input { stdin { } } output { elasticsearch { hosts => localhost } }'
 
 /usr/share/logstash/bin/logstash --config.test_and_exit -f /etc/logstash/conf.d/kern.conf
-
+```
 
 We can start Logstash with the following command:
+```
 $ /usr/share/logstash/bin/logstash -f /etc/logstash/conf.d/pipeline.conf
-
+```
 
 Newer versions of Logstash will check if you are using an Elasticsearch distributed by Elastic, using the basic free license or one of the paid tiers, the OSS version does not have the _license endpoint, so Logstash will not work.
 
 https://www.elastic.co/guide/en/logstash/7.17/installing-logstash.html#_apt
 
 
-# Logstash comes with a ton of plugins. you can list the plugins with the following command
+##### Logstash comes with a ton of plugins. you can list the plugins with the following command
 > ./usr/share/logstash/bin/logstash-plugin list
 
 
-# Sample logstash
-
+##### Sample logstash
+```
 input { stdin {} }
 
 filter {
@@ -163,10 +175,10 @@ filter {
 }
 
 output { stdout {} }
-
-# Grok constructor
+```
+##### Grok constructor
 To absorb or understand completely. Plugin for parsing unstructured data into structured data
-
+```
 filter {
   grok {
      match => {
@@ -174,10 +186,8 @@ filter {
      }
   }
  }
-
-# Mutate plugin (for transforming the data and operate on the results)
-
-
+```
+##### Mutate plugin (for transforming the data and operate on the results)
 
 https://grokconstructor.appspot.com/do/construction?example=2
 
@@ -280,13 +290,13 @@ https://www.elastic.co/guide/en/beats/metricbeat/8.3/metricbeat-installation-con
 https://www.elastic.co/guide/en/beats/metricbeat/current/running-with-systemd.html
 
 * Search for metricbeat documentation and nice little startup guide
-
+```
 web $ sudo apt-get update && sudo apt-get install metricbeat
 web $ sudo systemctl enable metricbeat
 web $ vim /etc/metricbeat/metricbeat.yml (search for /output.elastic)
 web $ systemctl restart metricbeat
 web $ systemctl status metricbeat
-
+```
 
 ##### KQL syntax
 
